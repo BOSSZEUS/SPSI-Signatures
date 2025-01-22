@@ -12,7 +12,7 @@ except Exception as e:
     print(f"Error loading Excel file: {e}")
     exit()  # Exit the script if the file can't be loaded
 
-# Updated HTML template with structured address
+# Updated HTML template with structured address and fixes
 html_template_with_address = """
 <table
   style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; width: 100%; max-width: 600px; border-spacing: 0;">
@@ -36,34 +36,55 @@ html_template_with_address = """
   </tr>
   <tr>
     <td colspan="2" style="padding: 5px; text-align: left; border-top: 1px solid #ccc;">
-      <img src="https://github.com/BOSSZEUS/1x/blob/master/50year-small.jpg?raw=true" alt="50 Years Anniversary"
-        style="height: 125px; margin-left: 43px; margin-top: 5px;">
-      <div style="margin: 10px;">
-        <a href="https://x.com/i/flow/login?redirect_after_login=%2FSPSIINC"
-          style="text-decoration: none; margin: 0 5px;">
-          <img src="https://github.com/BOSSZEUS/1x/blob/master/X%20Logo.png?raw=true" alt="x"
-            style="width: 24px; height: 24px;">
-        </a>
-        <a href="https://www.facebook.com/SPSIINC/?ref=ts&fref=ts"
-          style="text-decoration: none; margin: 0 5px;">
-          <img src="https://github.com/BOSSZEUS/1x/blob/master/FacebookLogo.png?raw=true" alt="Facebook"
-            style="width: 24px; height: 24px;">
-        </a>
-        <a href="https://www.youtube.com/user/spsivideo" style="text-decoration: none; margin: 0 5px;">
-          <img src="https://github.com/BOSSZEUS/1x/blob/master/youtube.png?raw=true" alt="YouTube"
-            style="width: 24px; height: 24px;">
-        </a>
-        <a href="https://www.linkedin.com/company/spsi-incorporated/posts/?feedView=all" style="text-decoration: none; margin: 0 5px;">
-          <img src="https://github.com/BOSSZEUS/1x/blob/master/LI-In-Bug.png?raw=true" alt="LinkedIn"
-            style="width: 28px; height: 24px;">
-        </a>
-        <a href="https://spsi.com/blogs/events" style="text-decoration: none; margin: 0 5px;">
-          <img src="https://github.com/BOSSZEUS/1x/blob/master/spsi-screenprintingPNG.png?raw=true" alt="SPSI"
-            style="width: 40px; height: 24px;">
-        </a>
-      </div>
+      <!-- Image with VML fallback for older Outlook -->
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td width="125" height="125" style="text-align: center;">
+            <!--[if gte mso 9]>
+            <v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" 
+                    style="height:125px; width:125px;">
+              <v:imagedata src="https://github.com/BOSSZEUS/1x/blob/master/50year-small.jpg?raw=true" />
+            </v:rect>
+            <![endif]-->
+            <img src="https://github.com/BOSSZEUS/1x/blob/master/50year-small.jpg?raw=true" 
+                 alt="50 Years Anniversary" 
+                 style="height: 125px; width: 125px; display: block; margin-left: 50px; margin-top: 5px;" 
+                 width="125" height="125">
+          </td>
+        </tr>
+      </table>
+      <br>
+      <br>
+      <div style="margin: 20px; display: inline-block;">
+  <a href="https://x.com/i/flow/login?redirect_after_login=%2FSPSIINC" 
+     style="text-decoration: none; display: inline-block; margin-right: 10px;">
+    <img src="https://github.com/BOSSZEUS/1x/blob/master/X%20Logo.png?raw=true" alt="x"
+         style="width: 24px; height: 24px; border: 0; display: block;" width="24" height="24">
+  </a>
+  <a href="https://www.facebook.com/SPSIINC/?ref=ts&fref=ts" 
+     style="text-decoration: none; display: inline-block; margin-right: 10px;">
+    <img src="https://github.com/BOSSZEUS/1x/blob/master/FacebookLogo.png?raw=true" alt="Facebook"
+         style="width: 24px; height: 24px; border: 0; display: block;" width="24" height="24">
+  </a>
+  <a href="https://www.youtube.com/user/spsivideo" 
+     style="text-decoration: none; display: inline-block; margin-right: 10px;">
+    <img src="https://github.com/BOSSZEUS/1x/blob/master/youtube.png?raw=true" alt="YouTube"
+         style="width: 24px; height: 24px; border: 0; display: block;" width="24" height="24">
+  </a>
+  <a href="https://www.linkedin.com/company/spsi-incorporated/posts/?feedView=all" 
+     style="text-decoration: none; display: inline-block; margin-right: 10px;">
+    <img src="https://github.com/BOSSZEUS/1x/blob/master/LI-In-Bug.png?raw=true" alt="LinkedIn"
+         style="width: 28px; height: 24px; border: 0; display: block;" width="28" height="24">
+  </a>
+  <a href="https://spsi.com/blogs/events" 
+     style="text-decoration: none; display: inline-block;">
+    <img src="https://github.com/BOSSZEUS/1x/blob/master/spsi-screenprintingPNG.png?raw=true" alt="SPSI"
+         style="width: 40px; height: 24px; border: 0; display: block;" width="40" height="24">
+  </a>
+</div>
     </td>
   </tr>
+  <br>
   <tr>
     <td colspan="2" style="padding: 0px; font-size: 12px; color: #1f497d; text-align: left;">
       <p style="margin: 0;">Confidentiality Notice: All information pertaining to this email contains confidential
@@ -100,7 +121,7 @@ def format_email(email):
     return ""
 
 # Generate HTML files
-output_folder_with_address = "signatures_New/"
+output_folder_with_address = "signatures_with_address/"
 os.makedirs(output_folder_with_address, exist_ok=True)  # Ensure output directory exists
 
 for _, row in df_uploaded.iterrows():

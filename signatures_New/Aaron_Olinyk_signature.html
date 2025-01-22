@@ -1,34 +1,19 @@
-import pandas as pd
-import os
 
-# File path to the Excel file
-file_path = r"C:\Users\jscheftic\OneDrive - spsi.com\Desktop\SPSI Code\SPSI Signatures\employees_spsi.xlsx"
-
-# Load the Excel file with the correct engine
-try:
-    df_uploaded = pd.read_excel(file_path, engine='openpyxl')
-    print("Excel file loaded successfully!")
-except Exception as e:
-    print(f"Error loading Excel file: {e}")
-    exit()  # Exit the script if the file can't be loaded
-
-# Updated HTML template with structured address
-html_template_with_address = """
 <table
   style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; width: 100%; max-width: 600px; border-spacing: 0;">
   <tr>
     <td style="padding: 10px; vertical-align: top; text-align: left;">
-      <p style="margin: 0; font-weight: bold; font-size: 16px;">{name}</p>
-      {title_section}
+      <p style="margin: 0; font-weight: bold; font-size: 16px;">Aaron Olinyk</p>
+      <p style="margin: 0; font-size: 14px;">Marketing/Website</p>
       <p style="margin: 10px 0 0; font-size: 14px;">
         SPSI, Inc.<br>
         9825 85th Avenue N<br>
         Maple Grove MN 55369
       </p>
       <p style="margin: 10px 0 0; font-size: 14px;">
-        <strong>Main:</strong> {phone_main} {extension_info} {direct_section}
+        <strong>Main:</strong> 763-391-7390 <strong>Ext.</strong> 1027 | <strong>Direct:</strong> 763-255-1027
       </p>
-      {email_section}
+      <p style="margin: 0; font-size: 14px;"><strong>Email:</strong> <a href="mailto:aolinyk@spsi.com" style="color: #0078D4; text-decoration: none;">aolinyk@spsi.com</a></p>
       <p style="margin-top: 10px 0; margin-bottom: 0;">
         <a href="https://www.spsi.com" style="color: #0078D4; text-decoration: none;">www.spsi.com</a>
       </p>
@@ -76,50 +61,3 @@ html_template_with_address = """
     </td>
   </tr>
 </table>
-"""
-
-# Functions to handle conditional sections
-def format_extension(extension):
-    if pd.notna(extension) and extension != "":
-        return f"<strong>Ext.</strong> {int(float(extension))}"  # Convert to integer
-    return ""
-
-def format_title(title):
-    if pd.notna(title) and title != "":
-        return f'<p style="margin: 0; font-size: 14px;">{title}</p>'
-    return ""
-
-def format_direct(phone_direct):
-    if pd.notna(phone_direct) and phone_direct != "":
-        return f'| <strong>Direct:</strong> {phone_direct}'
-    return ""
-
-def format_email(email):
-    if pd.notna(email) and email != "":
-        return f'<p style="margin: 0; font-size: 14px;"><strong>Email:</strong> <a href="mailto:{email}" style="color: #0078D4; text-decoration: none;">{email}</a></p>'
-    return ""
-
-# Generate HTML files
-output_folder_with_address = "signatures_New/"
-os.makedirs(output_folder_with_address, exist_ok=True)  # Ensure output directory exists
-
-for _, row in df_uploaded.iterrows():
-    extension_info = format_extension(row["Extension"])  # Add extension only if not blank
-    title_section = format_title(row["Title"])  # Add title only if not blank
-    direct_section = format_direct(row["PhoneDirect"])  # Add direct number only if not blank
-    email_section = format_email(row["Email"])  # Add email only if not blank
-
-    html_content = html_template_with_address.format(
-        name=row["Name"],
-        title_section=title_section,
-        phone_main=row["PhoneMain"],
-        extension_info=extension_info,
-        direct_section=direct_section,
-        email_section=email_section
-    )
-    # Save the HTML file for each employee
-    file_name = f"{row['Name'].replace(' ', '_')}_signature.html"
-    with open(os.path.join(output_folder_with_address, file_name), "w") as f:
-        f.write(html_content)
-
-print(f"Signatures generated in {output_folder_with_address}")
