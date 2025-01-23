@@ -139,7 +139,7 @@ for _, row in df_uploaded.iterrows():
         email_section=email_section
     )
     # Save the HTML file for each employee
-    file_name = f"{row['Name'].replace(' ', '_')}_signature.html"
+    file_name = f"{row['Name'].replace(' ', '_')}_signature_old.html"
     with open(os.path.join(output_folder_with_address, file_name), "w") as f:
         f.write(html_content)
 
