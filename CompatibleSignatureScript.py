@@ -16,7 +16,7 @@ except Exception as e:
 html_template_with_address = """
 <table style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; width: 100%; max-width: 600px; border-spacing: 0;" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td style="padding: 10px; vertical-align: top; text-align: left;">
+    <td style="padding: 10px; vertical-align: top; text-align: left;border-bottom: 1px solid #ccc;">
       <p style="margin: 0; font-weight: bold; font-size: 16px;">{name}</p>
       {title_section}
       <p style="margin: 10px 0 0; font-size: 14px;">
@@ -35,6 +35,7 @@ html_template_with_address = """
   </tr>
 
   <!-- Celebration Text Inserted -->
+  <!--
   <tr>
     <td colspan="2" style="padding: 5px 0 0 0; text-align: left; border-top: 1px solid #ccc;">
       <div style="margin: 10px 0; font-size: 14px; color: #333;">
@@ -48,6 +49,7 @@ html_template_with_address = """
       </div>
     </td>
   </tr>
+  -->
 
   <!-- Anniversary Image -->
   <tr>
