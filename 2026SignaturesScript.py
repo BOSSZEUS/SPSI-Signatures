@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-import re
 
 # File path to the Excel file
 file_path = r"C:\Users\jscheftic\SPSI Code\SPSI Signatures\employees_spsi.xlsx"
@@ -26,7 +25,7 @@ html_template = """
       {title_section}
       {mobile_section}
       <p style="margin: 6px 0 0; font-size: 13px; color: #000000;">
-        <strong>Main:</strong> <a href="tel:{phone_main_tel}" style="color: #000000; text-decoration: none;">{phone_main}</a> {extension_info} {direct_section}
+        <strong>Main:</strong> {phone_main} {extension_info} {direct_section}
       </p>
       {email_section}
     </td>
@@ -82,17 +81,19 @@ html_template = """
     </td>
   </tr>
 
-  <!-- Color bar + Confidentiality Footer (combined to avoid extra TR boundary around the color bar) -->
+  <!-- Color bar + Confidentiality Footer (combined to avoid extra TR boundary around the color bar).
+       Color cells are intentionally EMPTY: an invisible 1x4 spacer image showed up as a dark
+       1px seam between segments in clients that ignore opacity (Outlook). -->
   <tr>
     <td style="padding: 10px; font-size: 9px; color: #333333; text-align: left;">
       <div style="line-height: 0; font-size: 0; mso-line-height-rule: exactly;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%" height="4" style="width: 100%; height: 4px; border-spacing: 0; border-collapse: collapse; line-height: 0; font-size: 0; mso-line-height-rule: exactly;">
+      <table cellpadding="0" cellspacing="0" border="0" width="100%" height="4" style="width: 100%; height: 4px; border-spacing: 0; line-height: 0; font-size: 0; mso-line-height-rule: exactly;">
         <tr height="4" style="height: 4px; line-height: 0; mso-line-height-rule: exactly;">
-          <td width="20%" height="4" bgcolor="#78a22f" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #78a22f; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-logo.png?raw=true" alt="" width="1" height="4" style="display: block; width: 1px; height: 4px; max-height: 4px; border: 0; opacity: 0;" /></td>
-          <td width="20%" height="4" bgcolor="#e74c30" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #e74c30; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-logo.png?raw=true" alt="" width="1" height="4" style="display: block; width: 1px; height: 4px; max-height: 4px; border: 0; opacity: 0;" /></td>
-          <td width="20%" height="4" bgcolor="#8b6baf" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #8b6baf; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-logo.png?raw=true" alt="" width="1" height="4" style="display: block; width: 1px; height: 4px; max-height: 4px; border: 0; opacity: 0;" /></td>
-          <td width="20%" height="4" bgcolor="#c5c946" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #c5c946; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-logo.png?raw=true" alt="" width="1" height="4" style="display: block; width: 1px; height: 4px; max-height: 4px; border: 0; opacity: 0;" /></td>
-          <td width="20%" height="4" bgcolor="#3fa7c9" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #3fa7c9; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-logo.png?raw=true" alt="" width="1" height="4" style="display: block; width: 1px; height: 4px; max-height: 4px; border: 0; opacity: 0;" /></td>
+          <td width="20%" height="4" bgcolor="#78a22f" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #78a22f; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
+          <td width="20%" height="4" bgcolor="#e74c30" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #e74c30; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
+          <td width="20%" height="4" bgcolor="#8b6baf" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #8b6baf; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
+          <td width="20%" height="4" bgcolor="#c5c946" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #c5c946; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
+          <td width="20%" height="4" bgcolor="#3fa7c9" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #3fa7c9; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
         </tr>
       </table>
       </div>
@@ -108,13 +109,6 @@ def has_value(val):
     return pd.notna(val) and str(val).strip() != ""
 
 
-def tel_digits(phone):
-    """Strip all non-digit characters for use inside tel: links."""
-    if not has_value(phone):
-        return ""
-    return re.sub(r"\D", "", str(phone))
-
-
 def format_title(title):
     if has_value(title):
         return f'<p style="margin: 0; font-size: 14px;">{title}</p>'
@@ -128,12 +122,15 @@ def format_extension(extension):
 
 
 def format_mobile(mobile):
-    """Optional Mobile row, placed ABOVE the Main row when present."""
+    """Optional Mobile row, placed ABOVE the Main row when present.
+
+    Phone numbers are plain text on purpose: tel: links get rewritten as
+    "[tel;digits]" by some mail clients/gateways (seen in sent mail).
+    """
     if has_value(mobile):
         return (
             f'<p style="margin: 6px 0 0; font-size: 13px; color: #000000;">'
-            f'<strong>Mobile:</strong> '
-            f'<a href="tel:{tel_digits(mobile)}" style="color: #000000; text-decoration: none;">{mobile}</a>'
+            f'<strong>Mobile:</strong> {mobile}'
             f'</p>'
         )
     return ""
@@ -142,10 +139,7 @@ def format_mobile(mobile):
 def format_direct(phone_direct):
     """Optional Direct phone, appended inline after Main with a leading separator."""
     if has_value(phone_direct):
-        return (
-            f'| <strong>Direct:</strong> '
-            f'<a href="tel:{tel_digits(phone_direct)}" style="color: #000000; text-decoration: none;">{phone_direct}</a>'
-        )
+        return f'| <strong>Direct:</strong> {phone_direct}'
     return ""
 
 
@@ -173,14 +167,12 @@ for _, row in df_uploaded.iterrows():
     email_section = format_email(row.get("Email"))
 
     phone_main = row.get("PhoneMain", "")
-    phone_main_tel = tel_digits(phone_main)
 
     html_content = html_template.format(
         name=row["Name"],
         title_section=title_section,
         mobile_section=mobile_section,
         phone_main=phone_main,
-        phone_main_tel=phone_main_tel,
         extension_info=extension_info,
         direct_section=direct_section,
         email_section=email_section,
