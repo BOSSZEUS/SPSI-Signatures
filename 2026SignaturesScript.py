@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import html
 
 # File path to the Excel file
 file_path = r"C:\Users\jscheftic\SPSI Code\SPSI Signatures\employees_spsi.xlsx"
@@ -17,14 +18,27 @@ except Exception as e:
 # mission strap, logo + address + website, right-aligned social icons,
 # 5-segment color bar + confidentiality (combined in one TD to prevent
 # Outlook from inflating spacing around the color bar on forward/reply).
+#
+# Outlook notes (classic Word engine vs. new Outlook / web engine):
+# - Fixed 600px width via BOTH the width attribute and style. Classic Outlook
+#   ignores max-width, so a 100%/max-width table stretched to the full window
+#   there while new Outlook capped it at 600px.
+# - font-family and color are declared on every TD and P. Classic Outlook does
+#   not inherit them from the outer TABLE and falls back to Times New Roman.
+# - Color bar cells are intentionally EMPTY and use fixed pixel widths
+#   (5 x 116px = 580px inner width). An invisible spacer image showed up as a
+#   dark seam in clients that ignore opacity, and percentage widths can leave
+#   hairline gaps in Word's renderer.
+FONT = "font-family: Arial, Helvetica, sans-serif;"
+
 html_template = """
-<table style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; width: 100%; max-width: 600px; border-spacing: 0;" cellpadding="0" cellspacing="0" border="0">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="width: 600px; border-spacing: 0; border-collapse: separate; {FONT} font-size: 14px; line-height: 1.5; color: #333333;">
   <tr>
-    <td style="padding: 10px; vertical-align: top; text-align: left; border-bottom: 2px solid #333333;">
-      <p style="margin: 0; font-weight: bold; font-size: 20px; color: #000000;">{name}</p>
+    <td valign="top" style="padding: 10px; vertical-align: top; text-align: left; border-bottom: 2px solid #333333; {FONT} font-size: 14px; color: #000000;">
+      <p style="margin: 0; {FONT} font-weight: bold; font-size: 20px; color: #000000;">{name}</p>
       {title_section}
       {mobile_section}
-      <p style="margin: 6px 0 0; font-size: 13px; color: #000000;">
+      <p style="margin: 6px 0 0; {FONT} font-size: 13px; color: #000000;">
         <strong>Main:</strong> {phone_main} {extension_info} {direct_section}
       </p>
       {email_section}
@@ -33,31 +47,31 @@ html_template = """
 
   <!-- Mission strap line -->
   <tr>
-    <td style="padding: 8px 10px 0 10px; text-align: left;">
-      <p style="margin: 0; font-size: 10px; color: #808080; letter-spacing: 0.5px;">DRIVEN TO SUCCEED &nbsp;|&nbsp; TO SERVE AMAZINGLY &nbsp;|&nbsp; TRUE TO OURSELVES &nbsp;|&nbsp; WILLINGNESS TO INVEST</p>
+    <td valign="top" style="padding: 8px 10px 0 10px; text-align: left; {FONT} font-size: 10px; color: #808080;">
+      <p style="margin: 0; {FONT} font-size: 10px; color: #808080; letter-spacing: 0.5px;">DRIVEN TO SUCCEED &nbsp;|&nbsp; TO SERVE AMAZINGLY &nbsp;|&nbsp; TRUE TO OURSELVES &nbsp;|&nbsp; WILLINGNESS TO INVEST</p>
     </td>
   </tr>
 
   <!-- Logo + address -->
   <tr>
-    <td style="padding: 12px 10px 0 10px; text-align: left;">
+    <td valign="top" style="padding: 12px 10px 0 10px; text-align: left; {FONT} font-size: 13px; color: #333333;">
       <p style="margin: 0; font-size: 0; line-height: 0; mso-line-height-rule: exactly;">
         <a href="https://www.spsi.com" style="text-decoration: none; font-size: 0; line-height: 0;"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-logo.png?raw=true" alt="SPSI" width="130" height="37" style="width: 130px; height: 37px; display: block; border: 0; vertical-align: top;" /></a>
       </p>
-      <p style="margin: 8px 0 0; font-size: 13px;">{address1}</p>
-      <p style="margin: 0; font-size: 13px;">{address2}</p>
-      <p style="margin: 0; font-size: 13px;">
-        <a href="https://www.spsi.com" style="color: #333333; text-decoration: none;">www.spsi.com</a>
+      <p style="margin: 8px 0 0; {FONT} font-size: 13px; color: #333333;">{address1}</p>
+      <p style="margin: 0; {FONT} font-size: 13px; color: #333333;">{address2}</p>
+      <p style="margin: 0; {FONT} font-size: 13px; color: #333333;">
+        <a href="https://www.spsi.com" style="color: #333333; text-decoration: none;"><span style="color: #333333; text-decoration: none;">www.spsi.com</span></a>
       </p>
     </td>
   </tr>
 
   <!-- Social Icons Row (right-aligned) -->
   <tr>
-    <td align="right" style="padding: 0 10px; text-align: right;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="width: 100%; border-spacing: 0;">
+    <td align="right" valign="top" style="padding: 0 10px; text-align: right;">
+      <table width="580" cellpadding="0" cellspacing="0" border="0" style="width: 580px; border-spacing: 0;">
         <tr>
-          <td style="font-size: 0; line-height: 0;">&nbsp;</td>
+          <td style="font-size: 1px; line-height: 1px; mso-line-height-rule: exactly;">&nbsp;</td>
           <td width="40" style="width: 40px; padding: 0 3px;">
             <a href="https://veloxforum.com"><img src="https://allenbenedikt.github.io/spsi-email-assets/spsi-forum.png?raw=true" alt="SPSI Forum" width="34" height="34" style="width: 34px; height: 34px; display: block; border: 0;" /></a>
           </td>
@@ -68,7 +82,7 @@ html_template = """
             <a href="https://www.instagram.com/spsiinc/"><img src="https://allenbenedikt.github.io/spsi-email-assets/instagram.png?raw=true" alt="Instagram" width="34" height="34" style="width: 34px; height: 34px; display: block; border: 0;" /></a>
           </td>
           <td width="40" style="width: 40px; padding: 0 3px;">
-            <a href="https://www.facebook.com/SPSIINC/?ref=ts&fref=ts"><img src="https://allenbenedikt.github.io/spsi-email-assets/meta.png?raw=true" alt="Facebook" width="34" height="34" style="width: 34px; height: 34px; display: block; border: 0;" /></a>
+            <a href="https://www.facebook.com/SPSIINC/?ref=ts&amp;fref=ts"><img src="https://allenbenedikt.github.io/spsi-email-assets/meta.png?raw=true" alt="Facebook" width="34" height="34" style="width: 34px; height: 34px; display: block; border: 0;" /></a>
           </td>
           <td width="40" style="width: 40px; padding: 0 3px;">
             <a href="https://x.com/i/flow/login?redirect_after_login=%2FSPSIINC"><img src="https://allenbenedikt.github.io/spsi-email-assets/x.png?raw=true" alt="X" width="34" height="34" style="width: 34px; height: 34px; display: block; border: 0;" /></a>
@@ -82,26 +96,25 @@ html_template = """
   </tr>
 
   <!-- Color bar + Confidentiality Footer (combined to avoid extra TR boundary around the color bar).
-       Color cells are intentionally EMPTY: an invisible 1x4 spacer image showed up as a dark
-       1px seam between segments in clients that ignore opacity (Outlook). -->
+       Color cells are intentionally EMPTY with fixed pixel widths; see Outlook notes at the top of the script. -->
   <tr>
-    <td style="padding: 10px; font-size: 9px; color: #333333; text-align: left;">
+    <td valign="top" style="padding: 10px; {FONT} font-size: 9px; color: #333333; text-align: left;">
       <div style="line-height: 0; font-size: 0; mso-line-height-rule: exactly;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%" height="4" style="width: 100%; height: 4px; border-spacing: 0; line-height: 0; font-size: 0; mso-line-height-rule: exactly;">
-        <tr height="4" style="height: 4px; line-height: 0; mso-line-height-rule: exactly;">
-          <td width="20%" height="4" bgcolor="#78a22f" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #78a22f; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
-          <td width="20%" height="4" bgcolor="#e74c30" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #e74c30; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
-          <td width="20%" height="4" bgcolor="#8b6baf" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #8b6baf; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
-          <td width="20%" height="4" bgcolor="#c5c946" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #c5c946; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
-          <td width="20%" height="4" bgcolor="#3fa7c9" valign="top" style="width: 20%; height: 4px; max-height: 4px; min-height: 4px; background-color: #3fa7c9; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0; overflow: hidden;"></td>
+      <table width="580" height="4" cellpadding="0" cellspacing="0" border="0" style="width: 580px; height: 4px; border-spacing: 0; line-height: 0; font-size: 0; mso-line-height-rule: exactly;">
+        <tr height="4" style="height: 4px; mso-height-rule: exactly; line-height: 0; mso-line-height-rule: exactly;">
+          <td width="116" height="4" bgcolor="#78a22f" valign="top" style="width: 116px; height: 4px; background-color: #78a22f; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0;"></td>
+          <td width="116" height="4" bgcolor="#e74c30" valign="top" style="width: 116px; height: 4px; background-color: #e74c30; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0;"></td>
+          <td width="116" height="4" bgcolor="#8b6baf" valign="top" style="width: 116px; height: 4px; background-color: #8b6baf; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0;"></td>
+          <td width="116" height="4" bgcolor="#c5c946" valign="top" style="width: 116px; height: 4px; background-color: #c5c946; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0;"></td>
+          <td width="116" height="4" bgcolor="#3fa7c9" valign="top" style="width: 116px; height: 4px; background-color: #3fa7c9; font-size: 0; line-height: 0; mso-line-height-rule: exactly; padding: 0; border: 0;"></td>
         </tr>
       </table>
       </div>
-      <p style="margin: 10px 0 0 0;"><strong>Confidentiality Notice:</strong> All information pertaining to this email contains confidential information intended only for the use of the recipient(s) named in the header text. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution, or the taking of any action in reliance on the contents of this emailed information except its direct delivery to the person named above is strictly prohibited. If you have received this email in error, please notify us immediately by replying to this email and delete all copies of this message. This message is protected by applicable legal privileges and is confidential.</p>
+      <p style="margin: 10px 0 0 0; {FONT} font-size: 9px; color: #333333;"><strong>Confidentiality Notice:</strong> All information pertaining to this email contains confidential information intended only for the use of the recipient(s) named in the header text. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution, or the taking of any action in reliance on the contents of this emailed information except its direct delivery to the person named above is strictly prohibited. If you have received this email in error, please notify us immediately by replying to this email and delete all copies of this message. This message is protected by applicable legal privileges and is confidential.</p>
     </td>
   </tr>
 </table>
-"""
+""".replace("{FONT}", FONT)
 
 
 def has_value(val):
@@ -109,9 +122,16 @@ def has_value(val):
     return pd.notna(val) and str(val).strip() != ""
 
 
+def text(val):
+    """Spreadsheet cell -> trimmed, HTML-escaped string ('' when empty)."""
+    if not has_value(val):
+        return ""
+    return html.escape(str(val).strip(), quote=False)
+
+
 def format_title(title):
     if has_value(title):
-        return f'<p style="margin: 0; font-size: 14px;">{title}</p>'
+        return f'<p style="margin: 0; {FONT} font-size: 14px; color: #000000;">{text(title)}</p>'
     return ""
 
 
@@ -129,8 +149,8 @@ def format_mobile(mobile):
     """
     if has_value(mobile):
         return (
-            f'<p style="margin: 6px 0 0; font-size: 13px; color: #000000;">'
-            f'<strong>Mobile:</strong> {mobile}'
+            f'<p style="margin: 6px 0 0; {FONT} font-size: 13px; color: #000000;">'
+            f'<strong>Mobile:</strong> {text(mobile)}'
             f'</p>'
         )
     return ""
@@ -139,16 +159,17 @@ def format_mobile(mobile):
 def format_direct(phone_direct):
     """Optional Direct phone, appended inline after Main with a leading separator."""
     if has_value(phone_direct):
-        return f'| <strong>Direct:</strong> {phone_direct}'
+        return f'| <strong>Direct:</strong> {text(phone_direct)}'
     return ""
 
 
 def format_email(email):
     if has_value(email):
         return (
-            f'<p style="margin: 0; font-size: 13px; color: #000000;">'
+            f'<p style="margin: 0; {FONT} font-size: 13px; color: #000000;">'
             f'<strong>Email:</strong> '
-            f'<a href="mailto:{email}" style="color: #000000; text-decoration: none;">{email}</a>'
+            f'<a href="mailto:{text(email)}" style="color: #000000; text-decoration: none;">'
+            f'<span style="color: #000000; text-decoration: none;">{text(email)}</span></a>'
             f'</p>'
         )
     return ""
@@ -166,18 +187,18 @@ for _, row in df_uploaded.iterrows():
     direct_section = format_direct(row.get("PhoneDirect"))
     email_section = format_email(row.get("Email"))
 
-    phone_main = row.get("PhoneMain", "")
+    phone_main = text(row.get("PhoneMain"))
 
     html_content = html_template.format(
-        name=row["Name"],
+        name=text(row["Name"]),
         title_section=title_section,
         mobile_section=mobile_section,
         phone_main=phone_main,
         extension_info=extension_info,
         direct_section=direct_section,
         email_section=email_section,
-        address1=row.get("Address1", ""),
-        address2=row.get("Address2", ""),
+        address1=text(row.get("Address1")),
+        address2=text(row.get("Address2")),
     )
 
     file_name = f"{row['Name'].replace(' ', '_')}_signature.html"
